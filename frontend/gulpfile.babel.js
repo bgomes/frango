@@ -2,7 +2,7 @@ import gulp from 'gulp';
 import gulpLoadPlugins from 'gulp-load-plugins';
 import del from 'del';
 import browserSync from 'browser-sync';
-import replace from 'gulp-regex-replace';
+import replace from 'gulp-replace';
 
 
 const $ = gulpLoadPlugins();
@@ -82,10 +82,10 @@ gulp.task('html', ['styles', 'scripts'], () => {
     .pipe($.useref({searchPath: ['.tmp', '.tmp/static', 'static', 'templates', '.']}))
     .pipe($.if('*.js', $.uglify()))
     .pipe($.if('*.css', $.cssnano()))
-    .pipe($.if('*.html', replace({regex:'/static/styles/vendor.css', replace:'{% static "styles/vendor.css" %}'})))
-    .pipe($.if('*.html', replace({regex:'/static/styles/main.css', replace:'{% static "styles/main.css" %}'})))
-    .pipe($.if('*.html', replace({regex:'/static/scripts/vendor.js', replace:'{% static "scripts/vendor.js" %}'})))
-    .pipe($.if('*.html', replace({regex:'/static/scripts/main.js', replace:'{% static "scripts/main.js" %}'})))
+    .pipe($.if('*.html', replace(/"\/static\/(.*?)"/g, '"{% static "$1" %}"')))
+    //.pipe($.if('*.html', replace({regex:'/static/styles/main.css', replace:'{% static "styles/main.css" %}'})))
+    //.pipe($.if('*.html', replace({regex:'/static/scripts/vendor.js', replace:'{% static "scripts/vendor.js" %}'})))
+    //.pipe($.if('*.html', replace({regex:'/static/scripts/main.js', replace:'{% static "scripts/main.js" %}'})))
     .pipe($.if('*.html', $.htmlmin({
       collapseWhitespace: true,
       ignoreCustomFragments: [/\{\%[\s\S]*?\%\}/g, /\{\{[\s\S]*?\}\}/g]

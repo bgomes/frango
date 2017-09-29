@@ -13,9 +13,6 @@ DEBUG = False
 #USE_TZ = False
 
 ALLOWED_HOSTS = [
-    '*.herokuapp.com',
-    '127.0.0.1',
-    'localhost',
     '*',
 ]
 

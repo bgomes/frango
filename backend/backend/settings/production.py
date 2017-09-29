@@ -1,4 +1,4 @@
-#from django.utils.log import DEFAULT_LOGGING
+from django.utils.log import DEFAULT_LOGGING
 
 from .base import *
 
@@ -6,7 +6,7 @@ import dj_database_url
 import time
 
 
-#DEFAULT_LOGGING['handlers']['console']['filters'] = []
+DEFAULT_LOGGING['handlers']['console']['filters'] = []
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -16,6 +16,7 @@ ALLOWED_HOSTS = [
     '*.herokuapp.com',
     '127.0.0.1',
     'localhost',
+    '*',
 ]
 
 # Heroku Database

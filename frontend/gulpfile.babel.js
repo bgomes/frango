@@ -2,6 +2,7 @@ import gulp from 'gulp';
 import gulpLoadPlugins from 'gulp-load-plugins';
 import del from 'del';
 import browserSync from 'browser-sync';
+import replace from 'gulp-regex-replace';
 
 
 const $ = gulpLoadPlugins();
@@ -25,7 +26,7 @@ gulp.task('styles', () => {
 gulp.task('scripts', () => {
   return gulp.src('static/scripts/**/*.js')
     .pipe($.plumber())
-    .pipe($.sourcemaps.init()) 
+    .pipe($.sourcemaps.init())
     .pipe($.babel())
     .pipe($.sourcemaps.write())
     .pipe(gulp.dest('.tmp/static/scripts'))
@@ -53,6 +54,13 @@ gulp.task('fonts', () => {
     .pipe(gulp.dest('dist/static/fonts'));
 });
 
+gulp.task('staticfiles', () => {
+  return gulp.src(require('main-bower-files')('**/*.{jpg,png,gif}', function (err) {})
+    .concat('static/images/**/*'))
+    .pipe(gulp.dest('.tmp/static/images'))
+    .pipe(gulp.dest('dist/static/images'));
+});
+
 gulp.task('images', () => {
   return gulp.src('static/images/**/*')
     .pipe($.if($.if.isFile, $.cache($.imagemin({
@@ -74,6 +82,14 @@ gulp.task('html', ['styles', 'scripts'], () => {
     .pipe($.useref({searchPath: ['.tmp', '.tmp/static', 'static', 'templates', '.']}))
     .pipe($.if('*.js', $.uglify()))
     .pipe($.if('*.css', $.cssnano()))
+    .pipe($.if('*.html', replace({regex:'/static/styles/vendor.css', replace:'{% static "styles/vendor.css" %}'})))
+    .pipe($.if('*.html', replace({regex:'/static/styles/main.css', replace:'{% static "styles/main.css" %}'})))
+    .pipe($.if('*.html', replace({regex:'/static/scripts/vendor.js', replace:'{% static "scripts/vendor.js" %}'})))
+    .pipe($.if('*.html', replace({regex:'/static/scripts/main.js', replace:'{% static "scripts/main.js" %}'})))
+    .pipe($.if('*.html', $.htmlmin({
+      collapseWhitespace: true,
+      ignoreCustomFragments: [/\{\%[\s\S]*?\%\}/g, /\{\{[\s\S]*?\}\}/g]
+    })))
     .pipe($.if('*.js', gulp.dest('dist')))
     .pipe($.if('*.css', gulp.dest('dist')))
     .pipe($.if('*.html', gulp.dest('dist/templates')));
@@ -97,7 +113,7 @@ const testLintOptions = {
 gulp.task('lint', lint('static/scripts/**/*.js'));
 gulp.task('lint:test', lint('test/spec/**/*.js', testLintOptions));
 
-gulp.task('serve', ['styles', 'scripts', 'fonts'], () => {
+gulp.task('serve', ['styles', 'scripts', 'fonts', 'staticfiles'], () => {
   browserSync({
     notify: false,
     port: 9000,
@@ -168,7 +184,7 @@ gulp.task('serve:test', ['scripts'], () => {
 
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 
-gulp.task('build', ['lint', 'images', 'fonts', 'html']);
+gulp.task('build', ['lint', 'images', 'fonts', 'html', 'staticfiles']);
 
 gulp.task('default', ['clean'], () => {
   gulp.start('build')

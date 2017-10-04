@@ -27,13 +27,3 @@ STATICFILES_DIRS = [
     os.path.join(FRONTEND_DIR, '.tmp', 'static'),
     os.path.join(FRONTEND_DIR, 'static')
 ]
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'DATABASE_NAME',
-        'USER': 'DATABASE_USER',
-        'PASSWORD': 'DATABASE_PASSWORD',
-        'HOST': '127.0.0.1',
-    }
-}

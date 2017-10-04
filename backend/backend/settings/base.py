@@ -13,6 +13,11 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import environ
+
+root = environ.Path(__file__) - 4 # four folder back (/a/b/c/d/ - 3 = /)
+env = environ.Env(DEBUG=(bool, False),) # set default values and casting
+environ.Env.read_env() # reading .env file
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ROOT_DIR = os.path.realpath(os.path.join(BASE_DIR, '..', '..'))
@@ -25,7 +30,8 @@ FRONTEND_DIR = os.path.join(ROOT_DIR, 'frontend')
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '&x$9n4%+7*i%=!cf7o6l32^ny(cg2b@-38%$$z^ghn3lu78x98'
+# Raises ImproperlyConfigured exception if SECRET_KEY not in os.environ
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -87,10 +93,9 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    # Raises ImproperlyConfigured exception if DATABASE_URL not in os.environ
+    'default': env.db(),
+    'extra': env.db('SQLITE_URL', default=os.path.join(BASE_DIR, 'db.sqlite3'))
 }
 
 # Password validation

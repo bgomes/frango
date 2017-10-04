@@ -63,6 +63,7 @@ node_modules/
 *.pyc
 
 node_modules
+.env
 .tmp
 tmp
 bower_components

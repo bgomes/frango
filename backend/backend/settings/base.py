@@ -14,8 +14,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 import environ
-
-root = environ.Path(__file__) - 4 # four folder back (/a/b/c/d/ - 3 = /)
+root = environ.Path(__file__) - 4 # four folder back (/a/b/c/d/ - 4 = /)
 env = environ.Env(DEBUG=(bool, False),) # set default values and casting
 environ.Env.read_env() # reading .env file
 
@@ -95,7 +94,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     # Raises ImproperlyConfigured exception if DATABASE_URL not in os.environ
     'default': env.db(),
-    'extra': env.db('SQLITE_URL', default=os.path.join(BASE_DIR, 'db.sqlite3'))
+    'extra': env.db('SQLITE_URL', default='sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3'))
 }
 
 # Password validation
@@ -118,7 +117,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Internationalization
-# https://docs.djangoproject.com/en/1.8/topics/i18n/
+# https://docs.djangoproject.com/en/1.11/topics/i18n/
 
 
 LANGUAGE_CODE = 'en-us'

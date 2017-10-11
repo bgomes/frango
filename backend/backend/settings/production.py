@@ -1,24 +1,14 @@
+import time
+
 from django.utils.log import DEFAULT_LOGGING
 
 from .base import *
 
-import dj_database_url
-import time
-
-
 DEFAULT_LOGGING['handlers']['console']['filters'] = []
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-#USE_TZ = False
 
 ALLOWED_HOSTS = [
     '*',
 ]
-
-# Heroku Database
-db_from_env = dj_database_url.config(conn_max_age=500)
-DATABASES['default'].update(db_from_env)
 
 TEMPLATES = [
     {
